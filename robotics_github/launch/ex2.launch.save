@@ -1,0 +1,16 @@
+<launch>
+         <node name="red_finder" pkg="ex1" type="red_finder.py" />
+         <include file="$(find robotican_armadillo)/launch/armadillo.launch" output="log">
+                  <arg name="gazebo" value="true" />
+                  <arg name="lidar" value="true" />
+                  <arg name="kinect2" value="true" />
+                  <arg name="softkinetic" value="true" />
+                  <arg name="robot_localization" value="true" />
+                  <arg name="moveit" value="true" />
+                  <arg name="rqt" default="true" />
+                  <arg name="world_name" value="$(find ex2)/world/assg2.world"
+                  output="log"/>
+         </include>
+         <node name="menu" pkg="ex2" type="menu.py" output="screen" />
+	 <node name="object_cords_hxandler" pkg="ex2" type="object_cords_handler.py" output="screen" />
+</launch>
