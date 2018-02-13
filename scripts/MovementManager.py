@@ -79,7 +79,7 @@ class MovementManager(Waitable):
         rospy.loginfo("range_from_obstacle: {}".format(range_from_obstacle))
         if range_from_obstacle < self.OBSTACLE_THRESHOLD :
             rospy.loginfo("resetting distance, range from obstacle : {}".format(range_from_obstacle))
-            range_from_obstacle = 0
+            #range_from_obstacle = 0
             self.range_ahead = min(self.range_ahead, range_from_obstacle)
             rospy.loginfo("range ahead: {}".format(self.range_ahead))
 
