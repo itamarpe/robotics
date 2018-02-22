@@ -15,12 +15,12 @@ def degrees_to_radians(deg):
 
 class Rotate(Waitable):
 
-    def __init__(self, angle, laser_threshold=0, threshold_direction=True, laser_width=0.4):
+    def __init__(self, angle, laser_threshold=0, threshold_direction=True, laser_width=0.4, range_center=True):
 	rospy.loginfo("init called")
         self.odom_sub_ = rospy.Subscriber("/odometry/filtered", Odometry, self.calc_angular_movement)
         self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
 	if laser_threshold != 0 :
-		rospy.loginfo("laserrr")
+		rospy.loginfo("laser")
 		self.laser_scan = rospy.Subscriber("/scan", LaserScan, self.look_for_obstacle)
 		self.obstacle_threshold = laser_threshold
 		self.threshold_direction = threshold_direction
@@ -35,6 +35,7 @@ class Rotate(Waitable):
         self.speed = self.initial_speed
         self.last_euler_z = None
         self.distance_traveled = 0
+	self.range_center = range_center
         super(Rotate, self).__init__()
 
     def perform_angular_movement(self):
@@ -43,9 +44,17 @@ class Rotate(Waitable):
         rospy.loginfo("current angular speed: {}".format(self.speed))
         self.pub.publish(msg)
 
+    def get_range_from_obstacle(self, data):
+	if self.range_center:
+	        range_from_obstacle = min(data.ranges[int(self.laser_width * len(data.ranges)): -int(self.laser_width * len(data.ranges))])
+	else:
+	        #range_from_obstacle = min(data.ranges[:int(self.laser_width*len(data.ranges))]+data.ranges[-int(self.laser_width*len(data.ranges)):])
+		range_from_obstacle = min(data.ranges[400:450])
+	return range_from_obstacle
+
     def look_for_obstacle(self, data):
 	rospy.loginfo('len: {}'.format(len(data.ranges)))
-        range_from_obstacle = min(data.ranges[int(self.laser_width * len(data.ranges)): -int(self.laser_width * len(data.ranges))])
+        range_from_obstacle = self.get_range_from_obstacle(data) 
         rospy.loginfo("range_from_obstacle: {}".format(range_from_obstacle))
         if (self.threshold_direction and range_from_obstacle < self.obstacle_threshold) or (not self.threshold_direction and range_from_obstacle > self.obstacle_threshold):
             self.speed = 0
