@@ -42,6 +42,7 @@ def move_down_hall():
 
 def main():
     rospy.init_node('route_node')
+<<<<<<< HEAD
     reach_door()
     turn_to_door()
 #    align_wheels(-2)
@@ -53,6 +54,18 @@ def main():
     pass_door()
     #turn_towards_hall()
     #align_wheels(-2)
+=======
+    """
+    reach_door()
+    turn_to_door()
+    align_wheels(-2)
+    search_for_door_exit()
+    align_wheels(-2)
+    pass_door()
+    turn_towards_hall()
+    align_wheels(-2)
+    """
+>>>>>>> f6b0ec98f54218e15eea1f52b85ba57b75063f6a
     #move_down_hall()
     #rospy.loginfo("right : {}  left : {}".format())
     

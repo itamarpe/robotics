@@ -1,0 +1,20 @@
+<launch>
+         <node name="red_finder" pkg="ex1" type="red_finder.py" />
+         <include file="$(find robotican_armadillo)/launch/armadillo.launch">
+         	<arg name="gazebo" value="true" />
+         	<arg name="lidar" value="true" />
+        	<arg name="kinect2" value="true" />
+         	<arg name="softkinetic" value="true" />
+         	<arg name="robot_localization" value="true" />
+         	<arg name="moveit" value="true" />
+         	<arg name="rqt" value="false" />
+         	<arg name="world_name" value="$(find ex2)/world/assg2.world" />
+	</include>
+		<node pkg="robot_state_publisher" type="robot_state_publisher" name="rob_st_pub" />
+                <node pkg="joint_state_publisher" type="joint_state_publisher" name="jnt_st_pub" />
+
+         	<node name="convert_pointcloud_to_image" pkg="pcl_ros" type="convert_pointcloud_to_image" args="input:=/softkinetic_camera/depth/points output:=/image_data" />
+         	<node name="menu" pkg="ex2" type="menu.py"/>
+</launch>
+
+

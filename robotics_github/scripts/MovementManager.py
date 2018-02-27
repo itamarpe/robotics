@@ -6,70 +6,34 @@ from sensor_msgs.msg import LaserScan
 from nav_msgs.msg import Odometry
 from waitable import Waitable
 
+
 class MovementManager(Waitable):
 
     STOP = 0
     STOP_MOVEMENT_THRESHOLD = 0.1
     SLOWDOWN_THRESHOLD = 0.2
-    OBSTACLE_THRESHOLD = 0.75
-    SPEED = 0.1
 
-    def __init__(self, distance, check_obstacles=True, obstacle_threshold=None, threshold_direction=True, laser_width=0.4):
+    def __init__(self, distance, check_obstacles=True):
         #rospy.init_node('checkObstacle', anonymous=True)
         #rospy.loginfo("start movement manager")
-        if obstacle_threshold is None:
-            self.obstacle_threshold = self.OBSTACLE_THRESHOLD
-        else:
-            self.obstacle_threshold = obstacle_threshold
-<<<<<<< HEAD
-	
-	self.laser_width = laser_width
-	self.threshold_direction = threshold_direction
-=======
-
-        self.laser_width = laser_width
-        self.threshold_direction = threshold_direction
->>>>>>> f6b0ec98f54218e15eea1f52b85ba57b75063f6a
-        self.laser_sub_ = rospy.Subscriber("/scan", LaserScan, self.look_for_obstacle)
+	self.laser_sub_ = rospy.Subscriber("/scan", LaserScan, self.look_for_obstacle)
         self.odom_sub_ = rospy.Subscriber("/odometry/filtered", Odometry, self.calc_covered_distance)
         self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
         self.range_ahead = distance
         self.distance = distance
-        self.fast_pace_speed = self.SPEED if distance > 0.45 else self.SPEED * (2.0/3)
-        self.move_function = self.move_forward if distance > 0.45 else self.simple_move_forward
+        self.fast_pace_speed = 0.4+distance*0.1
         self.speed = self.fast_pace_speed
         self.starting_point = None
         self.initial_cords = None
         self.check_obstacles=check_obstacles
         super(MovementManager, self).__init__()
 
-<<<<<<< HEAD
-    def simple_move_forward(self):
-        print 'in simple_move_forward: speed:{}'.format(self.speed)
-        msg = Twist()
-        msg.linear.x = self.speed
-=======
-    def stop():
-        self.speed = self.STOP
-        self.odom_sub_.unregister()
-        self.laser_sub_.unregister()
-
-    def simple_move_forward(self):
-        print 'in simple_move_forward: speed:{}'.format(self.speed)
-        msg = Twist()
-        if self.range_ahead < distance * 0.95:
-            msg.linear.x = self.speed
-        else:
-            stop()
->>>>>>> f6b0ec98f54218e15eea1f52b85ba57b75063f6a
-        self.pub.publish(msg)
 
     def move_forward(self):
         """
         Publish data to /cmd_vel in order to manage robot movement. Since the robot accelerates, the speed is changed with
         consideation of covered distance, as the robot slows down relatively to the left distance.
         """
-        print 'in move_forward: speed:{}'.format(self.speed)
         msg = Twist()
 
         if self.range_ahead < self.STOP_MOVEMENT_THRESHOLD:
@@ -97,7 +61,7 @@ class MovementManager(Waitable):
         self.range_ahead = min(self.range_ahead, (self.distance - self.covered_distance))
         rospy.loginfo("covered distance : {}, range ahead : {}, {}".format(self.covered_distance, self.range_ahead, self.initial_cords))
         if self.speed != self.STOP:
-            self.move_function()
+            self.move_forward()
 
     def look_for_obstacle(self, data):
         """
@@ -108,16 +72,12 @@ class MovementManager(Waitable):
             self.laser_sub_.unregister()
             return
 
-        ranges_threshold = int(self.laser_width *len(data.ranges))
+        ranges_threshold = int(0.4*len(data.ranges))
         laser_ranges= data.ranges[ranges_threshold:-ranges_threshold]
         range_from_obstacle = min(laser_ranges)
-        rospy.loginfo("range_from_obstacle: {}".format(range_from_obstacle))
-        if (self.threshold_direction and range_from_obstacle < self.obstacle_threshold) or (not self.threshold_direction and range_from_obstacle > self.obstacle_threshold):
-            self.speed = self.STOP
-            self.odom_sub_.unregister()
-            self.laser_sub_.unregister()
+        if range_from_obstacle < self.distance :
             rospy.loginfo("resetting distance, range from obstacle : {}".format(range_from_obstacle))
-            #range_from_obstacle = 0
+            range_from_obstacle = 0
             self.range_ahead = min(self.range_ahead, range_from_obstacle)
             rospy.loginfo("range ahead: {}".format(self.range_ahead))
 
