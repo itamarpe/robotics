@@ -41,6 +41,11 @@ def move_arm():
     #move_arm_forward = lambda: ArmController().move_arm_forward()
     ArmController().move_arm_forward()
 
+def move_to_red_f():
+    for i in xrange(20):
+	# not goo
+	MoveToRedObject()
+
 def main():
     rospy.init_node('main_node')
     waits = lambda k: k.wait_for_cb()

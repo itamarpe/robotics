@@ -11,7 +11,8 @@ THRESHOLD = 0.25
 def look_for_obstacle(data):
     ranges_threshold = int(0.4*len(data.ranges))
     laser_ranges= data.ranges[ranges_threshold:-ranges_threshold] 
-    range_from_obstacle = min(laser_ranges)
+    #range_from_obstacle = min(laser_ranges)
+    range_from_obstacle = min(data.ranges)
     """
     range_from_obstacle = min(data.ranges)
     range_from_obstacle = min(data.ranges[:int(0.2*len(data.ranges))]+data.ranges[-int(0.2*len(data.ranges)):])

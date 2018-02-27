@@ -41,7 +41,7 @@ class MovementManager(Waitable):
         msg = Twist()
         msg.linear.x = self.speed
 
-    def stop():
+    def stop(self):
         self.speed = self.STOP
         self.odom_sub_.unregister()
         self.laser_sub_.unregister()
@@ -52,7 +52,7 @@ class MovementManager(Waitable):
         if self.range_ahead < distance * 0.95:
             msg.linear.x = self.speed
         else:
-            stop()
+            self.stop()
         self.pub.publish(msg)
 
     def move_forward(self):
@@ -99,15 +99,13 @@ class MovementManager(Waitable):
             self.laser_sub_.unregister()
             return
 
-        ranges_threshold = int(self.laser_width *len(data.ranges))
+        ranges_threshold = int(self.laser_width * len(data.ranges))
         laser_ranges= data.ranges[ranges_threshold:-ranges_threshold]
         range_from_obstacle = min(laser_ranges)
         rospy.loginfo("range_from_obstacle: {}".format(range_from_obstacle))
         if (self.threshold_direction and range_from_obstacle < self.obstacle_threshold) or (not self.threshold_direction and range_from_obstacle > self.obstacle_threshold):
-            self.speed = self.STOP
-            self.odom_sub_.unregister()
-            self.laser_sub_.unregister()
-            rospy.loginfo("resetting distance, range from obstacle : {}".format(range_from_obstacle))
+	    self.stop()
+            rospy.loginfo("resetting distance, range from obstacle : {}, threshold: {}".format(range_from_obstacle, self.obstacle_threshold))
             #range_from_obstacle = 0
             self.range_ahead = min(self.range_ahead, range_from_obstacle)
             rospy.loginfo("range ahead: {}".format(self.range_ahead))

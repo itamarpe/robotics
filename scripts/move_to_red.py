@@ -47,7 +47,7 @@ class MoveToRedObject(Waitable):
 
         Rotate(angle).wait_for_cb()
         self.moving=True
-        MovementManager(distance,True).wait_for_cb()
+        MovementManager(distance, check_obstacles=True, threshold_direction=True).wait_for_cb()
 
 
 if __name__ == '__main__':
