@@ -50,10 +50,11 @@ class MoveToRedObject(Waitable):
 
         if angle > 180:
             angle = angle - 360
-
-        Rotate(angle).wait_for_cb()
+        
+	if abs(angle) > 8:
+	    Rotate(0.5*angle).wait_for_cb()
         self.moving=True
-        MovementManager(distance, check_obstacles=True, threshold_direction=True).wait_for_cb()
+        MovementManager(distance, obstacle_threshold=0.4, check_obstacles=True, threshold_direction=True).wait_for_cb()
         return True
 
 
