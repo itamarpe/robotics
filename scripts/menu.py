@@ -41,11 +41,6 @@ def move_arm():
     #move_arm_forward = lambda: ArmController().move_arm_forward()
     ArmController().move_arm_forward()
 
-def move_to_red_f():
-    for i in xrange(20):
-	# not goo
-	MoveToRedObject()
-
 def main():
     rospy.init_node('main_node')
     waits = lambda k: k.wait_for_cb()
@@ -53,7 +48,7 @@ def main():
     move = lambda : waits(MovementManager(0.5))
     rotate = lambda: waits(Rotate(get_angle()))
 
-    move_to_red = lambda: waits(MoveToRedObject())
+    move_to_red = lambda: waits(MoveToRedObject(repeat=20))
 
     funcs = [move, rotate, object_detector, move_to_red, move_arm]
 

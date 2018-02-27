@@ -9,18 +9,24 @@ from rotate import Rotate
 from std_msgs.msg import Float32
 from waitable import Waitable
 from cam import ObjectDetector
+from time import sleep
 
 class MoveToRedObject(Waitable):
 
     MAX_DISTANCE_FROM_OBJECT = 0.25
     ARM_LENGTH = 0.25
 
-    def __init__(self):
+    def __init__(self, repeat=1):
         rospy.loginfo("Distance to red")
         self.moving=False
         #self.distance_sub_=rospy.Subscriber("object_distance",Float32,self.move_to_red)
 	super(MoveToRedObject,self).__init__()
-	self.move_to_red()
+        for i in xrange(repeat):
+            rospy.loginfo("move to red: iteration number: {}".format(i + 1))
+            res = self.move_to_red()
+            if res:
+                break
+                sleep(0.05)
 
     def move_to_red(self):
         """
@@ -30,7 +36,7 @@ class MoveToRedObject(Waitable):
         res = object_detector.get_distance_from_red_object()
         if res is None:
             rospy.loginfo("Red object was not detected")
-            return
+            return False
 
         distance, angle = res
         #if self.moving:
@@ -48,6 +54,7 @@ class MoveToRedObject(Waitable):
         Rotate(angle).wait_for_cb()
         self.moving=True
         MovementManager(distance, check_obstacles=True, threshold_direction=True).wait_for_cb()
+        return True
 
 
 if __name__ == '__main__':
