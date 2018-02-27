@@ -16,7 +16,7 @@ def turn_to_door():
 
 def search_for_door_exit():
     print 'searching for dor exit'
-    waits(Rotate(30, laser_threshold=0.5, threshold_direction=False, laser_width=0.2, range_center=False))
+    waits(Rotate(350, laser_threshold=0.8, threshold_direction=False, laser_width=0.2, range_center=False))
 
 def align_wheels(angle):
    print 'aligning wheels'

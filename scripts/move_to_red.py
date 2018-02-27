@@ -12,7 +12,7 @@ from cam import ObjectDetector
 
 class MoveToRedObject(Waitable):
 
-    MAX_DISTANCE_FROM_OBJECT = 0.5
+    MAX_DISTANCE_FROM_OBJECT = 0.25
     ARM_LENGTH = 0.25
 
     def __init__(self):
