@@ -49,11 +49,7 @@ class Rotate(Waitable):
 	        range_from_obstacle = min(data.ranges[int(self.laser_width * len(data.ranges)): -int(self.laser_width * len(data.ranges))])
 	else:
 	        #range_from_obstacle = min(data.ranges[:int(self.laser_width*len(data.ranges))]+data.ranges[-int(self.laser_width*len(data.ranges)):])
-<<<<<<< HEAD
-		range_from_obstacle = min(data.ranges[350:400])
-=======
-		range_from_obstacle = min(data.ranges[400:450])
->>>>>>> f6b0ec98f54218e15eea1f52b85ba57b75063f6a
+		range_from_obstacle = min(data.ranges[300:350])
 	return range_from_obstacle
 
     def look_for_obstacle(self, data):

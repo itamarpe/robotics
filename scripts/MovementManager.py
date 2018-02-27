@@ -21,15 +21,8 @@ class MovementManager(Waitable):
             self.obstacle_threshold = self.OBSTACLE_THRESHOLD
         else:
             self.obstacle_threshold = obstacle_threshold
-<<<<<<< HEAD
-	
-	self.laser_width = laser_width
-	self.threshold_direction = threshold_direction
-=======
-
         self.laser_width = laser_width
         self.threshold_direction = threshold_direction
->>>>>>> f6b0ec98f54218e15eea1f52b85ba57b75063f6a
         self.laser_sub_ = rospy.Subscriber("/scan", LaserScan, self.look_for_obstacle)
         self.odom_sub_ = rospy.Subscriber("/odometry/filtered", Odometry, self.calc_covered_distance)
         self.pub = rospy.Publisher('/cmd_vel', Twist, queue_size=10)
@@ -43,12 +36,11 @@ class MovementManager(Waitable):
         self.check_obstacles=check_obstacles
         super(MovementManager, self).__init__()
 
-<<<<<<< HEAD
     def simple_move_forward(self):
         print 'in simple_move_forward: speed:{}'.format(self.speed)
         msg = Twist()
         msg.linear.x = self.speed
-=======
+
     def stop():
         self.speed = self.STOP
         self.odom_sub_.unregister()
@@ -61,7 +53,6 @@ class MovementManager(Waitable):
             msg.linear.x = self.speed
         else:
             stop()
->>>>>>> f6b0ec98f54218e15eea1f52b85ba57b75063f6a
         self.pub.publish(msg)
 
     def move_forward(self):
